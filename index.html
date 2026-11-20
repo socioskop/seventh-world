@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Seventh World</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #0a0a1a;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      font-family: sans-serif;
+      user-select: none;
+    }
+    #gameCanvas {
+      display: block;
+      width: min(800px, 100vw);
+      height: auto;
+      aspect-ratio: 16 / 9;
+      border: 1px solid #222;
+    }
+    #mobileControls {
+      display: none;
+      width: min(800px, 100vw);
+      padding: 8px 6px 4px;
+      gap: 6px;
+      justify-content: space-between;
+      align-items: center;
+    }
+    @media (pointer: coarse) { #mobileControls { display: flex; } }
+    .btn-group { display: flex; gap: 5px; }
+    .gbtn {
+      width: 52px; height: 46px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 8px;
+      color: #ccc; font-size: 18px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .gbtn:active { background: rgba(255,255,255,0.22); }
+    .gbtn.punch  { background: rgba(255,120,20,0.22); border-color: #FF8800; color: #FFAA44; }
+    .gbtn.action { background: rgba(80,130,255,0.18); border-color: #4488FF; color: #88CCFF; }
+    .gbtn.charge { background: rgba(0,180,255,0.18);  border-color: #00CCFF; color: #88EEFF; }
+  </style>
+</head>
+<body>
+  <canvas id="gameCanvas"></canvas>
+  <div id="mobileControls">
+    <div class="btn-group">
+      <button class="gbtn" id="btn-left">◀</button>
+      <button class="gbtn" id="btn-right">▶</button>
+      <button class="gbtn" id="btn-jump">↑</button>
+    </div>
+    <div class="btn-group">
+      <button class="gbtn punch"  id="btn-punch">Z</button>
+      <button class="gbtn action" id="btn-blast">X</button>
+      <button class="gbtn charge" id="btn-charge">C</button>
+    </div>
+  </div>
+  <script type="module" src="js/main.js"></script>
+  <script>
+    const map = {
+      'btn-left':'ArrowLeft','btn-right':'ArrowRight','btn-jump':'ArrowUp',
+      'btn-punch':'KeyZ','btn-blast':'KeyX','btn-charge':'KeyC'
+    };
+    Object.entries(map).forEach(([id, code]) => {
+      const el = document.getElementById(id);
+      const fire = (t) => window.dispatchEvent(new KeyboardEvent(t, { code, bubbles: true }));
+      el.addEventListener('touchstart', (e) => { e.preventDefault(); fire('keydown'); }, { passive: false });
+      el.addEventListener('touchend',   (e) => { e.preventDefault(); fire('keyup');   }, { passive: false });
+      el.addEventListener('mousedown',  ()  => fire('keydown'));
+      el.addEventListener('mouseup',    ()  => fire('keyup'));
+      el.addEventListener('mouseleave', ()  => fire('keyup'));
+    });
+  </script>
+</body>
+</html>
